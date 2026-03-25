@@ -1,19 +1,16 @@
-use anyhow::{Result, bail};
-use std::fs::{create_dir, create_dir_all, write};
-use std::path::PathBuf;
+use crate::branch::refs_dir;
+use crate::commit::objects_dir;
 use crate::staging::{default_staging_serialized, staging_file};
+use anyhow::{Result, bail};
+use std::fs::{create_dir_all, write};
+use std::path::PathBuf;
 
 const ROOT: &str = ".git-rs";
 
 pub fn root() -> PathBuf {
     PathBuf::from(ROOT)
 }
-fn objects_dir() -> PathBuf {
-    root().join("objects")
-}
-fn refs_dir() -> PathBuf {
-    root().join("refs")
-}
+
 fn head_file() -> PathBuf {
     root().join("HEAD")
 }

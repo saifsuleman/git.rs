@@ -2,13 +2,7 @@ use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub enum FilePatch {
-    Add {
-        path: String,
-        contents: String,
-    },
-    Modify {
-        path: String,
-        diff: String,
-    },
-    Delete { path: String },
+    Created { path: String, contents: String },
+    Modified { path: String, diff: String },
+    Deleted { path: String },
 }

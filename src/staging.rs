@@ -1,16 +1,23 @@
+use crate::patch::FilePatch;
+use anyhow::{Result, bail};
+use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::fs::{read_to_string, write};
 use std::path::{Path, PathBuf};
-use anyhow::{bail, Result};
-use serde::{Deserialize, Serialize};
 
 pub fn staging_file() -> PathBuf {
-    crate::storage::root().join("staging")
+    crate::repo::root().join("staging")
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub enum StagedChange {
+    Upsert(String),
+    Delete,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct StagingArea {
-    pub files: HashMap<String, String>, // file name -> contents of file at time of stage
+    pub files: HashMap<String, StagedChange>,
 }
 
 pub fn default_staging_serialized() -> Result<String> {
@@ -30,16 +37,18 @@ pub fn save_staging(staging: &StagingArea) -> Result<()> {
     Ok(())
 }
 
-pub fn stage_file(path: &str) -> Result<()> {
+pub fn stage_file_upsert(path: &str) -> Result<()> {
     let real = Path::new(path);
 
     if !real.exists() {
-        bail!("file: {} does not exist", real.display());
+        bail!("file {} does not exist", path);
     }
 
     let content = read_to_string(real)?;
     let mut staging = load_staging()?;
-    staging.files.insert(path.to_string(), content);
+    staging
+        .files
+        .insert(path.to_string(), StagedChange::Upsert(content));
     save_staging(&staging)?;
 
     Ok(())

@@ -1,6 +1,7 @@
-mod patch;
+mod branch;
 mod commit;
-mod storage;
+mod patch;
+mod repo;
 mod staging;
 
 fn main() {
