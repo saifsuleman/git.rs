@@ -4,10 +4,6 @@ use anyhow::Result;
 use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 
-pub fn objects_dir() -> PathBuf {
-    root().join("objects")
-}
-
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Commit {
     pub hash: String,
